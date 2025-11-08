@@ -17,6 +17,67 @@
             line-height: 1.4; 
         }
 
+        .language-toggle-container {
+            max-width: 600px;
+            margin: 20px auto 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .language-toggle-container span {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #007bff;
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #28a745;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+
         .convite-container {
             position: relative; 
             max-width: 600px; 
@@ -33,7 +94,7 @@
 
         .conteudo {
             position: absolute; 
-            bottom: 1%; 
+            bottom: 8%; 
             left: 50%;
             transform: translateX(-50%);
             width: 90%; 
@@ -120,9 +181,18 @@
 </head>
 <body>
 
+    <div class="language-toggle-container">
+        <span>Português</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="languageToggle" onchange="switchLanguage()">
+            <span class="toggle-slider"></span>
+        </label>
+        <span>English</span>
+    </div>
+
     <div class="convite-container" id="conviteArea"> 
         
-        <img src="conviteeditavel.png" alt="Convite Trombetas e Festas 2025">
+        <img id="conviteImage" src="conviteeditavel.png" alt="Convite Trombetas e Festas 2025">
 
         <div class="conteudo">
             <div id="area-input">
@@ -137,21 +207,18 @@
 
             <div id="area-convite">
                 
-                <h2>CONVITE ESPECIAL</h2>
+                <h2 id="titulo-especial"></h2>
                 
-                <h1 id="nome-destaque">Olá!</h1>
-                <p>Você e sua família são nossos convidados de honra para o:</p>
+                <h1 id="nome-destaque"></h1>
+                <p id="texto-convite"></p>
                 
-                <h2>"Culto Internacional - Trombetas e Festas 2025"</h2>
+                <h2 id="titulo-evento"></h2>
                 
-                <p>Será um evento de alerta para o mundo sobre os acontecimentos atuais que antecedem a volta de Jesus.</p>
-                <p>
-                    <strong>Data:</strong> 29 de Novembro de 2025<br>
-                    <strong>Horário:</strong> 17h (Horário de Brasília)
-                </p>
-                <p>Convidamos vocês para assistirem ao evento conosco na:</p>
+                <p id="descricao-evento"></p>
+                <p id="data-hora-info"></p>
+                <p id="texto-assistir"></p>
                 
-                <strong id="endereco-destaque">[Endereço aparecerá aqui]</strong>
+                <strong id="endereco-destaque"></strong>
                 
             </div>
         </div>
@@ -163,20 +230,142 @@
     </div>
 
     <script>
+        // Current language (default is Portuguese)
+        let currentLanguage = 'pt';
+
+        // Language content objects
+        const languageContent = {
+            pt: {
+                pageTitle: "Convite Especial - Trombetas e Festas 2025",
+                htmlLang: "pt-br",
+                backgroundImage: "conviteeditavel.png",
+                imageAlt: "Convite Trombetas e Festas 2025",
+                placeholderName: "Digite o nome do seu convidado",
+                placeholderAddress: "Digite o endereço da igreja aqui",
+                buttonPersonalize: "Personalizar Convite",
+                titleSpecial: "CONVITE ESPECIAL",
+                greeting: "Olá",
+                greetingDefault: "Olá!",
+                invitationText: "Você e sua família são nossos convidados de honra para o:",
+                eventTitle: '"Culto Internacional - Trombetas e Festas 2025"',
+                eventDescription: "Será um evento de alerta para o mundo sobre os acontecimentos atuais que antecedem a volta de Jesus.",
+                dateLabel: "Data:",
+                dateValue: "29 de Novembro de 2025",
+                timeLabel: "Horário:",
+                timeValue: "17h (Horário de Brasília)",
+                watchText: "Convidamos vocês para assistirem ao evento conosco na:",
+                addressDefault: "Nossa igreja mais próxima de você!",
+                addressPlaceholder: "[Endereço aparecerá aqui]",
+                buttonNewInvite: "Gerar Novo Convite",
+                buttonDownload: "Baixar Imagem do Convite",
+                downloadFilename: "convite-personalizado.png",
+                defaultGuestName: "Convidado(a) Especial"
+            },
+            en: {
+                pageTitle: "Special Invitation - Trumpets & Feasts 2025",
+                htmlLang: "en",
+                backgroundImage: "conviteeditavelenglish.png",
+                imageAlt: "Trumpets & Feasts 2025 Invitation",
+                placeholderName: "Enter your guest's name",
+                placeholderAddress: "Enter the church address here",
+                buttonPersonalize: "Personalize Invitation",
+                titleSpecial: "SPECIAL INVITATION",
+                greeting: "Hello",
+                greetingDefault: "Hello!",
+                invitationText: "You and your family are our special guests for the:",
+                eventTitle: '"International Service - Trumpets & Feasts 2025"',
+                eventDescription: "It will be an event to alert the world about current events that precede the return of Jesus.",
+                dateLabel: "Date:",
+                dateValue: "November 30, 2025",
+                timeLabel: "Time:",
+                timeValue: "10 AM (Local time in Orlando)",
+                watchText: "We invite you to watch the event with us at:",
+                addressDefault: "Our church nearest to you!",
+                addressPlaceholder: "[Address will appear here]",
+                buttonNewInvite: "Generate New Invitation",
+                buttonDownload: "Download Invitation Image",
+                downloadFilename: "invitation-personalized.png",
+                defaultGuestName: "Special Guest"
+            }
+        };
+
+        function switchLanguage() {
+            const toggle = document.getElementById('languageToggle');
+            currentLanguage = toggle.checked ? 'en' : 'pt';
+            const lang = languageContent[currentLanguage];
+
+            // Update page title and html lang attribute
+            document.title = lang.pageTitle;
+            document.documentElement.lang = lang.htmlLang;
+
+            // Update background image
+            document.getElementById('conviteImage').src = lang.backgroundImage;
+            document.getElementById('conviteImage').alt = lang.imageAlt;
+
+            // Update input placeholders
+            document.getElementById('campo-nome').placeholder = lang.placeholderName;
+            document.getElementById('campo-endereco').placeholder = lang.placeholderAddress;
+
+            // Update button text in input area
+            const personalizeButton = document.querySelector('#area-input button');
+            personalizeButton.textContent = lang.buttonPersonalize;
+
+            // Update static content in area-convite with new IDs
+            document.getElementById('titulo-especial').textContent = lang.titleSpecial;
+            document.getElementById('texto-convite').textContent = lang.invitationText;
+            document.getElementById('titulo-evento').textContent = lang.eventTitle;
+            document.getElementById('descricao-evento').textContent = lang.eventDescription;
+            document.getElementById('texto-assistir').textContent = lang.watchText;
+
+            // Update date and time
+            document.getElementById('data-hora-info').innerHTML = `<strong>${lang.dateLabel}</strong> ${lang.dateValue}<br><strong>${lang.timeLabel}</strong> ${lang.timeValue}`;
+
+            // Update address placeholder if still showing default
+            const enderecoElement = document.getElementById('endereco-destaque');
+            if (enderecoElement.textContent === languageContent.pt.addressPlaceholder || 
+                enderecoElement.textContent === languageContent.en.addressPlaceholder ||
+                enderecoElement.textContent === '') {
+                enderecoElement.textContent = lang.addressPlaceholder;
+            }
+
+            // Update greeting if showing default
+            const nomeElement = document.getElementById('nome-destaque');
+            if (nomeElement.textContent === languageContent.pt.greetingDefault || 
+                nomeElement.textContent === languageContent.en.greetingDefault ||
+                nomeElement.textContent === '') {
+                nomeElement.textContent = lang.greetingDefault;
+            } else {
+                // If there's a custom name, update the greeting part
+                const currentText = nomeElement.textContent;
+                if (currentText.startsWith('Olá, ')) {
+                    nomeElement.textContent = currentText.replace('Olá, ', lang.greeting + ', ');
+                } else if (currentText.startsWith('Hello, ')) {
+                    nomeElement.textContent = currentText.replace('Hello, ', lang.greeting + ', ');
+                }
+            }
+
+            // Update action buttons
+            const actionButtons = document.querySelectorAll('#botoesAcao button');
+            if (actionButtons.length > 0) {
+                actionButtons[0].textContent = lang.buttonNewInvite;
+                actionButtons[1].textContent = lang.buttonDownload;
+            }
+        }
+
         function gerarConvite() {
+            const lang = languageContent[currentLanguage];
+            
             var nome = document.getElementById('campo-nome').value;
             if (nome.trim() === "") { 
-                nome = "Convidado(a) Especial";
+                nome = lang.defaultGuestName;
             }
-            document.getElementById('nome-destaque').innerText = "Olá, " + nome + "!";
+            document.getElementById('nome-destaque').innerText = lang.greeting + ", " + nome + "!";
             
             var endereco = document.getElementById('campo-endereco').value;
             if (endereco.trim() === "") {
-                endereco = "Nossa igreja mais próxima de você!"; 
+                endereco = lang.addressDefault; 
             }
             
-            /* !!!! MUDANÇA NO JAVASCRIPT BEM AQUI !!!! */
-            /* Tirei o .toUpperCase() para não ficar tão gritante */
             document.getElementById('endereco-destaque').innerText = endereco; 
 
             
@@ -186,37 +375,56 @@
         }
 
         function reiniciarConvite() {
+            const lang = languageContent[currentLanguage];
+            
             document.getElementById('campo-nome').value = ''; 
             document.getElementById('campo-endereco').value = ''; 
             
             document.getElementById('area-input').style.display = 'block'; 
             document.getElementById('area-convite').style.display = 'none'; 
-            document.getElementById('botoes-acao').style.display = 'none'; 
-            document.getElementById('nome-destaque').innerText = 'Olá!'; 
+            document.getElementById('botoesAcao').style.display = 'none'; 
+            document.getElementById('nome-destaque').innerText = lang.greetingDefault; 
             document.getElementById('endereco-destaque').innerText = ''; 
         }
 
         function baixarConvite() {
+            const lang = languageContent[currentLanguage];
+            
             var botoesAcao = document.getElementById('botoesAcao');
+            var languageToggleContainer = document.querySelector('.language-toggle-container');
+            
             botoesAcao.style.display = 'none'; 
+            languageToggleContainer.style.display = 'none';
 
             var conviteElement = document.getElementById('conviteArea');
 
             html2canvas(conviteElement, {
                 useCORS: true, 
                 scale: 2,
-                logging: false 
+                logging: false,
+                allowTaint: true
             }).then(function(canvas) {
                 var link = document.createElement('a');
-                link.download = 'convite-personalizado.png'; 
+                link.download = lang.downloadFilename; 
                 link.href = canvas.toDataURL('image/png', 1.0); 
                 document.body.appendChild(link); 
                 link.click(); 
                 document.body.removeChild(link); 
                 
-                botoesAcao.style.display = 'block'; 
+                botoesAcao.style.display = 'block';
+                languageToggleContainer.style.display = 'flex'; 
+            }).catch(function(error) {
+                console.error('Error capturing image:', error);
+                botoesAcao.style.display = 'block';
+                languageToggleContainer.style.display = 'flex';
+                alert('Error downloading image. Please try again.');
             });
         }
+
+        // Initialize page content on load
+        window.addEventListener('DOMContentLoaded', function() {
+            switchLanguage();
+        });
     </script>
 
 </body>
