@@ -94,12 +94,19 @@
 
         .conteudo {
             position: absolute; 
-            bottom: 8%; 
+            bottom: 3%; 
             left: 50%;
             transform: translateX(-50%);
             width: 90%; 
             background-color: transparent; 
             color: #333; 
+        }
+        
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .conteudo {
+                bottom: 1%;
+            }
         }
         
         #area-input {
@@ -192,7 +199,7 @@
 
     <div class="convite-container" id="conviteArea"> 
         
-        <img id="conviteImage" src="conviteeditavel.png" alt="Convite Trombetas e Festas 2025">
+        <img id="conviteImage" src="convite-editavel-english-v2.webp" alt="Convite Trombetas e Festas 2025">
 
         <div class="conteudo">
             <div id="area-input">
@@ -238,7 +245,7 @@
             pt: {
                 pageTitle: "Convite Especial - Trombetas e Festas 2025",
                 htmlLang: "pt-br",
-                backgroundImage: "conviteeditavel.png",
+                backgroundImage: "convite-editavel-english-v2.webp",
                 imageAlt: "Convite Trombetas e Festas 2025",
                 placeholderName: "Digite o nome do seu convidado",
                 placeholderAddress: "Digite o endereço da igreja aqui",
@@ -264,7 +271,7 @@
             en: {
                 pageTitle: "Special Invitation - Trumpets & Feasts 2025",
                 htmlLang: "en",
-                backgroundImage: "conviteeditavelenglish.png",
+                backgroundImage: "convite-editavel-english-v2.webp",
                 imageAlt: "Trumpets & Feasts 2025 Invitation",
                 placeholderName: "Enter your guest's name",
                 placeholderAddress: "Enter the church address here",
